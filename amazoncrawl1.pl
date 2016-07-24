@@ -55,20 +55,34 @@ sub extractFields {
     my @features_array;
 
     #-- Extract name
-    if ($content =~ /<span id="productTitle"[^>]+>([^<]+)<\/span>/) {
-        $data->{name} = $1;
+    if ($content =~ /<span id="productTitle"[^>]*>\s*([^<]+<\/span>)/) {
+        my $name = $1;
+        $name =~ s/\s*<\/span>//sig;
+        $data->{name} = $name;
     }  
-    if ($content =~ /Technical Details(.*?)<\/table>\s*<\/div>/) {
-        my $feature_dump = $1;
+    
 
-        while ($feature_dump =~ /RAM <\/td><td class="value">([^<]+)<\/td><\/tr>/g) {
+    while ($content =~ /<td class=\"label\"[^>]*>\s*([^<+]\s*[^<]+<\/td>\s*<td\s*class\=\s*\"value\">[^<]+)/g) {
             my $line = $1;
-            #print STDERR Dumper $line;
+            $line =~ s/<\/td>//sig;
+            $line =~ s/<td class="value">/\:/sig;
+            $line =~ s/Best Sellers Rank:.*//sig;
+            if ($line){
             push (@features_array, $line);
         }
-       # print STDERR Dumper \@features_array;
+        }
+        while ($content =~ /<li><span class=\"a-list-item\">\s*([^<]+)<\/span>\s*<\/li>/g) {
+            my $line2 = $1;
+            $line2 =~ s/<\/td>//sig;
+            $line2 =~ s/<td class="value">/\:/sig;
+            $line2 =~ s/Best Sellers Rank:.*//sig;
+            if ($line2){
+            push (@features_array, $line2);
+        }
+        }
+
         $data->{feature} = \@features_array;
-    }   
+    #}  
 
     #-- Extract price
     if ($content =~ /<span id="priceblock\_ourprice"[^>]+><span[^>]+>[^<]+<\/span>([^<]+)<\/span>/) {
