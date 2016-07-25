@@ -61,7 +61,7 @@ sub extractFields {
         $data->{name} = $name;
     }  
     
-
+   #Extracting Features
     while ($content =~ /<td class=\"label\"[^>]*>\s*([^<+]\s*[^<]+<\/td>\s*<td\s*class\=\s*\"value\">[^<]+)/g) {
             my $line = $1;
             $line =~ s/<\/td>//sig;
@@ -71,7 +71,7 @@ sub extractFields {
             push (@features_array, $line);
         }
         }
-        while ($content =~ /<li><span class=\"a-list-item\">\s*([^<]+)<\/span>\s*<\/li>/g) {
+    while ($content =~ /<li><span class=\"a-list-item\">\s*([^<]+)<\/span>\s*<\/li>/g) {
             my $line2 = $1;
             $line2 =~ s/<\/td>//sig;
             $line2 =~ s/<td class="value">/\:/sig;
